@@ -1,0 +1,168 @@
+<!-- Sidebar + Header layout -->
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="/logo.png" alt="SmartBot Factory">
+    </div>
+
+    <nav class="menu">
+      <a class="active">
+        <i class="bi bi-grid"></i> Tableau de bord
+      </a>
+      <a>
+        <i class="bi bi-robot"></i> Mes chatbots
+      </a>
+      <a>
+        <i class="bi bi-link-45deg"></i> Sources
+      </a>
+      <a>
+        <i class="bi bi-graph-up"></i> Analytics
+      </a>
+      <a>
+        <i class="bi bi-gear"></i> Paramètres
+      </a>
+
+      <!-- 🧠 NEW: Recommendation link -->
+      <a routerLink="/recommendation" routerLinkActive="active">
+  <i class="bi bi-stars"></i> Recommandations
+</a>
+
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- Header -->
+    <header class="header">
+      <div class="search">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          placeholder="Rechercher un chatbot par nom ou domaine…"
+          [(ngModel)]="q"
+          (input)="applyFilters()"
+        />
+      </div>
+
+      <div class="toolbar">
+        <select class="form-select" [(ngModel)]="sort" (change)="applyFilters()">
+          <option value="recent">Plus récents</option>
+          <option value="name">Nom (A–Z)</option>
+          <option value="sources">+ de sources</option>
+        </select>
+
+        <button class="btn btn-primary" (click)="openCreate()">
+          <i class="bi bi-plus-lg"></i> Nouveau chatbot
+        </button>
+
+        <button class="btn btn-outline" routerLink="/login">
+          Déconnexion
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <section class="content">
+      <!-- Message d’erreur -->
+      <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+      <!-- Skeletons -->
+      <div class="grid" *ngIf="loading">
+        <div class="card skeleton" *ngFor="let _ of [1,2,3,4,5,6]"></div>
+      </div>
+
+      <!-- Empty -->
+      <div class="empty" *ngIf="!loading && filtered.length === 0">
+        <img src="https://illustrations.popsy.co/gray/robot.svg" alt="">
+        <h3>Aucun chatbot trouvé</h3>
+        <p>Essayez d’ajouter un nouveau chatbot ou modifiez votre recherche.</p>
+        <button class="btn btn-primary" (click)="openCreate()">
+          <i class="bi bi-plus-lg"></i> Créer un chatbot
+        </button>
+      </div>
+
+      <!-- Grid de chatbots -->
+      <div class="grid" *ngIf="!loading && filtered.length">
+        <div class="card" *ngFor="let b of filtered">
+          <div class="card-head">
+            <div class="avatar">
+              <i class="bi bi-robot"></i>
+            </div>
+            <div class="meta">
+              <h4>{{ b.name }}</h4>
+              <div class="domain">{{ b.domain }}</div>
+            </div>
+            <span class="status" [class.ready]="b.status==='READY'"
+                                [class.indexing]="b.status==='INDEXING'"
+                                [class.error]="b.status==='ERROR'">
+              {{ b.status }}
+            </span>
+          </div>
+
+          <div class="card-body">
+            <div class="stat">
+              <i class="bi bi-link-45deg"></i>
+              <span>{{ b.sources?.length || 0 }} source(s)</span>
+            </div>
+            <div class="muted">
+              Modifié le {{ b.updatedAt | date: 'medium' }}
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <a class="btn btn-light" [routerLink]="['/chatbots', b.id]">
+              <i class="bi bi-gear"></i> Gérer
+            </a>
+
+            <button class="btn btn-outline-danger" (click)="remove(b.id)">
+              <i class="bi bi-trash"></i> Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Modal création -->
+<div class="modal-backdrop" *ngIf="showCreate" (click)="closeCreate()"></div>
+<div class="modal" *ngIf="showCreate">
+  <div class="modal-head">
+    <h5><i class="bi bi-robot"></i> Nouveau chatbot</h5>
+    <button class="icon" (click)="closeCreate()"><i class="bi bi-x-lg"></i></button>
+  </div>
+
+  <form [formGroup]="createForm" (ngSubmit)="create()">
+    <div class="form-field">
+      <label>Nom</label>
+      <input class="form-control" formControlName="name" placeholder="Ex. Support AI">
+      <small *ngIf="createForm.get('name')?.touched && createForm.get('name')?.invalid">
+        Nom requis (min. 3 caractères).
+      </small>
+    </div>
+
+    <div class="form-field">
+      <label>Domaine</label>
+      <input class="form-control" formControlName="domain" placeholder="exemple.com">
+      <small *ngIf="createForm.get('domain')?.touched && createForm.get('domain')?.invalid">
+        Domaine requis.
+      </small>
+    </div>
+
+    <div class="form-field">
+      <label>Sources (1 URL par ligne — optionnel)</label>
+      <textarea class="form-control" formControlName="sourcesText" rows="4"
+        placeholder="https://docs.exemple.com/faq
+https://blog.exemple.com/guide"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-light" type="button" (click)="closeCreate()">Annuler</button>
+      <button class="btn btn-primary" type="submit" [disabled]="creating">
+        <span class="spinner" *ngIf="creating"></span>
+        Créer
+      </button>
+    </div>
+  </form>
+</div>

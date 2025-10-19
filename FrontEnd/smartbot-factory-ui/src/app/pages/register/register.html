@@ -1,0 +1,46 @@
+<div class="min-vh-100 d-flex align-items-center bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-10 col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <div class="text-center mb-3">
+              <i class="bi bi-person-plus fs-1 text-primary"></i>
+              <h4 class="mt-2 mb-0">Créer un compte</h4>
+              <small class="text-muted">Rejoignez SmartBot Factory</small>
+            </div>
+
+            <!-- Liaison avec le FormGroup -->
+            <form [formGroup]="form" (ngSubmit)="submit()">
+              <div class="mb-3">
+                <label class="form-label">Nom complet</label>
+                <input formControlName="fullName" class="form-control" placeholder="Jane Doe">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" formControlName="email" class="form-control" placeholder="you@email.com">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Mot de passe</label>
+                <input type="password" formControlName="password" class="form-control" placeholder="••••••••">
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100" [disabled]="loading || form.invalid">
+                S’inscrire
+              </button>
+            </form>
+
+            <div class="text-center mt-3">
+              <small class="text-muted">Déjà un compte ?</small>
+              <a routerLink="/login" class="ms-1">Se connecter</a>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-center text-muted small mt-3 mb-0">© SmartBot Factory</p>
+      </div>
+    </div>
+  </div>
+</div>

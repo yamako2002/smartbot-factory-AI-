@@ -1,0 +1,54 @@
+<div class="page-container">
+  <h2 class="title">🤖 SmartBot Recommendations</h2>
+
+  <!-- 🔍 Search Bar -->
+  <div class="search-section">
+    <input
+      type="text"
+      placeholder="Enter a topic or purpose (e.g. travel booking assistant)"
+      [(ngModel)]="query"
+      (keyup.enter)="getRecommendations()"
+    />
+    <button (click)="getRecommendations()" [disabled]="loading">
+      {{ loading ? 'Searching...' : 'Find Similar Bots' }}
+    </button>
+  </div>
+
+  <!-- ⏳ Loading -->
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Fetching recommendations...</p>
+  </div>
+
+  <!-- 📊 Results -->
+  <div class="results-section" *ngIf="!loading && recommendations.length > 0">
+    <h3>Top {{ recommendations.length }} Recommendations</h3>
+
+    <div
+      class="recommendation-card"
+      *ngFor="let rec of recommendations"
+      [ngClass]="rec.source === 'SmartBotFactory' ? 'internal' : 'external'"
+    >
+      <div class="card-header">
+        <h4>{{ rec.name }}</h4>
+        <span class="score">Score: {{ rec.score | number : '1.2-2' }}</span>
+      </div>
+
+      <p *ngIf="rec.domain">🌐 Domain: {{ rec.domain }}</p>
+      <p *ngIf="rec.provider">🏢 Provider: {{ rec.provider }}</p>
+      <p class="source">
+        Source:
+        <strong
+          [class.internal]="rec.source === 'SmartBotFactory'"
+          [class.external]="rec.source === 'OpenRouter'"
+        >
+          {{ rec.source }}
+        </strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- ❌ Empty State -->
+  <div *ngIf="!loading && recommendations.length === 0" class="empty">
+    <p>No recommendations yet — try searching above! 🔎</p>
+  </div>
+</div>

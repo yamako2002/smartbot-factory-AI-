@@ -1,0 +1,27 @@
+:root {
+  --header-h: 64px;
+}
+
+/* Header sticky + glass effect */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid rgba(140, 90, 255, 0.15);
+}
+
+.app-logo {
+  height: 150px;
+  object-fit: contain;
+}
+
+/* Décaler le contenu sous le header */
+.app-main {
+  padding-top: var(--header-h);
+}

@@ -1,0 +1,71 @@
+<div class="container mt-4">
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+    <p class="mt-2">Chargement du chatbot...</p>
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Détails du chatbot -->
+  <div *ngIf="!loading && bot" class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title">
+        {{ bot.name }}
+        <span class="badge"
+              [ngClass]="{
+                'bg-success': bot.status === 'READY',
+                'bg-warning': bot.status === 'INDEXING',
+                'bg-danger': bot.status === 'ERROR'
+              }">
+          {{ bot.status }}
+        </span>
+      </h3>
+
+      <p class="card-text text-muted">
+        Domaine : <strong>{{ bot.domain }}</strong>
+      </p>
+
+      <p class="card-text">
+        Sources liées : <strong>{{ bot.sources?.length || 0 }}</strong>
+      </p>
+
+      <p class="small text-muted">
+        Créé le : {{ bot.createdAt | date:'medium' }}<br>
+        Modifié le : {{ bot.updatedAt | date:'medium' }}
+      </p>
+
+      <div class="mt-4 d-flex gap-2">
+        <button class="btn btn-outline-primary" (click)="openImportText()">
+          <i class="bi bi-file-text"></i> Importer du texte
+        </button>
+        <button class="btn btn-outline-secondary" (click)="openImportFile()">
+          <i class="bi bi-file-earmark-arrow-up"></i> Importer un fichier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="chat-container">
+  <div class="messages">
+    <div *ngFor="let m of messages" [ngClass]="m.sender">
+      <span>{{ m.text }}</span>
+    </div>
+  </div>
+
+  <form (ngSubmit)="sendMessage()" class="chat-input">
+    <input type="text" [(ngModel)]="userInput" name="message" placeholder="Écrivez un message..." [disabled]="sending" />
+    <button type="submit" class="btn btn-primary" [disabled]="sending">
+      Envoyer
+    </button>
+  </form>
+</section>
+
+
+</div>

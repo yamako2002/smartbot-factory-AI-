@@ -1,0 +1,71 @@
+
+
+<!-- CONTENU -->
+<div class="min-vh-100 d-flex align-items-center bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-10 col-md-8 col-lg-5">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <div class="text-center mb-3">
+              <i class="bi bi-robot fs-1 text-primary"></i>
+              <h4 class="mt-2 mb-0">SmartBot Factory</h4>
+              <small class="text-muted">Connectez-vous</small>
+            </div>
+
+            <!-- FORMULAIRE -->
+            <form [formGroup]="form" (ngSubmit)="submit()">
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="you@email.com"
+                  formControlName="email"
+                />
+                <div class="text-danger small" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+                  Email invalide.
+                </div>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label">Mot de passe</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="••••••••"
+                  formControlName="password"
+                />
+                <div class="text-danger small" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+                  Mot de passe requis.
+                </div>
+              </div>
+
+              <div *ngIf="error" class="alert alert-danger py-2">{{ error }}</div>
+
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="remember">
+                  <label class="form-check-label" for="remember">Se souvenir de moi</label>
+                </div>
+                <a class="small" href="#">Mot de passe oublié ?</a>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100"
+                      [disabled]="form.invalid || loading">
+                {{ loading ? 'Connexion…' : 'Se connecter' }}
+              </button>
+            </form>
+
+            <div class="text-center mt-3">
+              <small class="text-muted">Pas de compte ?</small>
+              <a routerLink="/register" class="ms-1">Créer un compte</a>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-center text-muted small mt-3 mb-0">© SmartBot Factory</p>
+      </div>
+    </div>
+  </div>
+</div>
